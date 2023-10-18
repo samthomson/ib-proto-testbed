@@ -12,7 +12,6 @@ It works by connecting to a local lightning node via the gRPC interface. A react
 
 ## todo
 
-- linting etc for spa
 - lightning connection
 - send some basic node state to the client
 
