@@ -10,6 +10,10 @@ It works by connecting to a local lightning node via the gRPC interface. A react
 
 ## todo
 
+- prettier/linting etc
+- watch server to restart it on changes
+- react app
+
 ### some errors to test against
 
 - node starting up
