@@ -13,6 +13,9 @@ It works by connecting to a local lightning node via the gRPC interface. A react
 - prettier/linting etc
 - watch server to restart it on changes
 - react app
+- integrate spa with ws api, read and send
+- lightning connection
+- send some basic node state to the client
 
 ### some errors to test against
 
