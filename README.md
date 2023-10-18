@@ -13,7 +13,6 @@ It works by connecting to a local lightning node via the gRPC interface. A react
 ## todo
 
 - linting etc for spa
-- integrate spa with ws api, read and send
 - lightning connection
 - send some basic node state to the client
 

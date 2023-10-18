@@ -12,7 +12,7 @@ services:
       # - VAR=${VAR}
     ports:
       - "3600:3000"
-      # - "3601:4000"
+      - "3601:8080"
     volumes:
       - ./app:/app
     # expose:
