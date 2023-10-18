@@ -2,20 +2,20 @@ version: "2"
 services:
   app:
     build: ./app
-    # command:
-    #   [
-    #     sh,
-    #     -c,
-    #     "cd /app/server && yarn run watch-server & cd /app/client && yarn run start"
-    #   ]
+    command:
+      [
+        sh,
+        -c,
+        "cd /app/server && yarn run watch-server & cd /app/client && yarn run start"
+      ]
     # environment:
       # - VAR=${VAR}
-    # ports:
-      # - "3500:3001"
-      # - "3501:4001"
+    ports:
+      - "3600:3000"
+      # - "3601:4000"
     volumes:
       - ./app:/app
     # expose:
-      # - "3500"
+      # - "3600"
       # - "3501"
 
