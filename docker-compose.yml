@@ -1,0 +1,21 @@
+version: "2"
+services:
+  app:
+    build: ./app
+    # command:
+    #   [
+    #     sh,
+    #     -c,
+    #     "cd /app/server && yarn run watch-server & cd /app/client && yarn run start"
+    #   ]
+    # environment:
+      # - VAR=${VAR}
+    # ports:
+      # - "3500:3001"
+      # - "3501:4001"
+    volumes:
+      - ./app:/app
+    # expose:
+      # - "3500"
+      # - "3501"
+

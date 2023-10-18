@@ -1,0 +1,5 @@
+app/server/node_modules
+app/server/logs
+app/client/node_modules
+app/client/build
+Dockerfile
