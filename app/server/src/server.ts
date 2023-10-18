@@ -2,7 +2,8 @@
 import WebSocket from 'ws'
 
 // Create a WebSocket server
-const wss = new WebSocket.Server({ port: 8080 })
+const port = 8080
+const wss = new WebSocket.Server({ port })
 
 // Set up a connection event
 wss.on('connection', (ws: WebSocket) => {
@@ -17,4 +18,4 @@ wss.on('connection', (ws: WebSocket) => {
     ws.send('Welcome to the server!')
 })
 
-console.log('WebSocket server started on ws://localhost:8080')
+console.log(`WebSocket server started on ws://localhost:${port}`)

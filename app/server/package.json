@@ -6,6 +6,7 @@
   },
   "scripts": {
     "start": "ts-node src/server.ts",
+    "watch-server": "tsc-watch -p ./tsconfig.json --onSuccess \"yarn run start\" --onFailure \"echo Compilation failed...\" --noClear",
     "lint-summary": "eslint '*/**/*.{js,ts,tsx}'",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
   },
@@ -16,6 +17,7 @@
     "eslint": "7",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "prettier": "^2.4.1"
+    "prettier": "^2.4.1",
+    "tsc-watch": "^6.0.4"
   }
 }

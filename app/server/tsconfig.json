@@ -1,9 +1,9 @@
 {
 	"compilerOptions": {
 	  "target": "es6",
+	  "noEmit": true,
 	  "module": "commonjs",
 	  "lib": ["es6", "dom"],
-	  "outDir": "./dist",
 	  "rootDir": "./src",
 	  "strict": true,
 	  "esModuleInterop": true
