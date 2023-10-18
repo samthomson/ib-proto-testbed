@@ -8,10 +8,10 @@ It works by connecting to a local lightning node via the gRPC interface. A react
 `docker-compose build`
 `docker-compose run app sh` then `cd server && yarn && cd ../client && yarn`
 
+`docker-compose up`
+
 ## todo
 
-- react app
-- docker starting up server/client dev env?
 - integrate spa with ws api, read and send
 - lightning connection
 - send some basic node state to the client
