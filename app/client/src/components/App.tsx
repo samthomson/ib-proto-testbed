@@ -1,4 +1,5 @@
 import React from 'react'
+import useWebSocket, { ReadyState } from 'react-use-websocket';
 
 // todo: share this type
 interface Invoice {
@@ -12,28 +13,25 @@ interface Invoice {
 const App = () => {
 	const [invoices, setInvoices] = React.useState<Invoice[]>([])
 
-	const wsRef = React.useRef<WebSocket | null>(null);
 
-	React.useEffect(() => {
-		// Initialize WebSocket connection
-		const ws = new WebSocket('ws://localhost:3601')
-		wsRef.current = ws;
+	const { sendMessage, lastMessage, readyState } = useWebSocket('ws://localhost:3601');
 
-		// if (!ws) {return}
 
-		// Connection opened
-		ws.addEventListener('open', () => {
-			ws.send(JSON.stringify({action: 'connection', value: "Hello Server!"}))
-		})
+	const connectionStatus = {
+		[ReadyState.CONNECTING]: 'Connecting',
+		[ReadyState.OPEN]: 'Open',
+		[ReadyState.CLOSING]: 'Closing',
+		[ReadyState.CLOSED]: 'Closed',
+		[ReadyState.UNINSTANTIATED]: 'Uninstantiated',
+	  }[readyState];
 
-		// Listen for messages from server
-		ws.addEventListener('message', (event) => {
-			console.log('Message from server:', event?.data)
-
-			const parsedData = JSON.parse(event.data)
+	  React.useEffect(() => {
+		if (lastMessage !== null) {
+			const parsedData = JSON.parse(lastMessage.data)
 
 			switch (parsedData.action) {
 				case 'newInvoice':
+					// show it somewhere
 					setInvoices((prevInvoices) => [
 						...prevInvoices,
 						parsedData.invoice,
@@ -42,33 +40,23 @@ const App = () => {
 				case 'allInvoices':
 					setInvoices(parsedData.invoices)
 					break
-				case 'invoicePaid':
-					setInvoices((prevInvoices) =>
-						prevInvoices.map((inv) =>
-							inv.lnAddress === parsedData.invoice.lnAddress
-								? parsedData.invoice
-								: inv,
-						),
-					)
-					break
 			}
-		})
-
-		// Cleanup
-		return () => {
-			ws.close()
 		}
-	}, [])
+	  }, [lastMessage]);
+
+
 
 	const sendTip = () => {
 		const amount = Math.floor(Math.random() * 1000) + 1
 
-		wsRef.current?.send(JSON.stringify({action: 'createInvoice', amount }))
+		sendMessage(JSON.stringify({ action: 'createInvoice', amount }))
 	}
 
 	return (
 		<div>
-			<p>[todo: form for creating invoices]
+			{connectionStatus}<hr/>
+			<p>
+				[todo: form for creating invoices]
 				<button onClick={sendTip}>send tip</button>
 			</p>
 			{(invoices ?? []).length > 0 && (
@@ -76,7 +64,9 @@ const App = () => {
 					<h4>Past tips</h4>
 					<ul>
 						{invoices.map((invoice, key) => (
-							<li key={key}>{invoice.amount}</li>
+							<li key={key}>
+								{invoice.amount}: {invoice.status}
+							</li>
 						))}
 					</ul>
 				</div>

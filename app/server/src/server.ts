@@ -16,15 +16,15 @@ interface Invoice {
 const recentInvoices: Invoice[] = []
 
 // Set up a connection event
+let singleClient: WebSocket | null = null
 wss.on('connection', (ws: WebSocket) => {
-    console.log('New client connected?')
+    singleClient = ws
+    // send intial state of past txs
+    sendRecentInvoices()
 
     // Set up message event for this connection
     ws.on('message', (message: string) => {
         console.log(`Received message: ${message}`)
-
-        // Send a welcome message to the client
-        ws.send(JSON.stringify({ action: 'connection', connected: true }))
 
         const parsedMessage = JSON.parse(message.toString())
         switch (parsedMessage.action) {
@@ -40,26 +40,32 @@ wss.on('connection', (ws: WebSocket) => {
                 recentInvoices.push(newInvoice)
                 // ws.send(JSON.stringify({ action: 'newInvoice', invoice: newInvoice }))
                 console.log('will now send out invoices', recentInvoices)
-                ws.send(JSON.stringify({ action: 'allInvoices', invoices: recentInvoices }))
+                sendRecentInvoices()
 
                 // simulate it getting paid after 10s (in reality, this would come from watching the node)
                 setInterval(() => {
-                    if (recentInvoices.length > 0) {
-                        recentInvoices[recentInvoices.length - 1].status = 'paid'
-                        ws.send(
-                            JSON.stringify({
-                                action: 'invoicePaid',
-                                invoice: recentInvoices[recentInvoices.length - 1],
-                            }),
-                        )
-                    }
-                }, 10000)
+                    wrapUpLatestInvoice()
+                }, 5000)
         }
     })
 })
 
-// const emitInvoices = () => {
-//     wss.emit('newInvoice', { invoices: recentInvoices })
-// }
+const wrapUpLatestInvoice = () => {
+    if (!singleClient) {
+        return
+    }
+    if (recentInvoices.length > 0) {
+        recentInvoices[recentInvoices.length - 1].status = 'paid'
+        sendRecentInvoices()
+    }
+}
+
+const sendRecentInvoices = () => {
+    if (!singleClient) {
+        return
+    }
+
+    singleClient.send(JSON.stringify({ action: 'allInvoices', invoices: recentInvoices }))
+}
 
 console.log(`WebSocket server started on ws://localhost:${port}`)
