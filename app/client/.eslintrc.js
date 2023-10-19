@@ -7,16 +7,18 @@ module.exports = {
 			jsx: true,
 		},
 	},
-
-	extends: ["plugin:react/recommended", "plugin:prettier/recommended"],
+	settings: {
+		react: {
+			version: "detect",
+		},
+	},
+	extends: [
+		"plugin:react/recommended",
+		"plugin:@typescript-eslint/recommended",
+		"plugin:prettier/recommended",
+	],
 	rules: {
-		"prettier/prettier": [
-			"error",
-			{
-				semi: false,
-			},
-		],
-		semi: ["error", "never"],
-		indent: ["error", "tab"],
+		// Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
+		// e.g. "@typescript-eslint/explicit-function-return-type": "off",
 	},
 }
