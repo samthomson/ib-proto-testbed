@@ -13,6 +13,13 @@ interface AddInvoiceResponse {
     payment_request: string
     r_hash: string
 }
+interface ListInvoiceResponse {
+    invoices: {
+        value: number
+        state: number
+        creation_date: number
+    }[]
+}
 export class Lightning {
     private GRPC_HOST = 'umbrel.local:10009'
 
@@ -104,6 +111,36 @@ export class Lightning {
             if (state === 1) {
                 onSettledCallback(payment_request)
             }
+        })
+    }
+
+    public async getPastInvoicesPaid() {
+        const request = {
+            pending_only: false,
+            // index_offset: <uint64>,
+            num_max_invoices: 3,
+            reversed: true,
+            // creation_date_start: <uint64>,
+            // creation_date_end: <uint64>,
+        }
+
+        return new Promise((resolve) => {
+            this.lnd.listInvoices(
+                request,
+                // todo
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                (err, response: ListInvoiceResponse) => {
+                    if (err) {
+                        console.error('err listing invoices', err)
+                    }
+                    if (response) {
+                        console.log('response', response.invoices)
+                        resolve(response.invoices)
+                    }
+                    // console.log('something?', response, err);
+                },
+            )
         })
     }
 }

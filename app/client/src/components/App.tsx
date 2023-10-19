@@ -4,11 +4,9 @@ import QRCode from "react-qr-code"
 
 // todo: share this type
 interface Invoice {
-	amount: number
-	creationDate: string
-	expiryDate: string
-	status: 'paid' | 'unpaid'
-	lnAddress: string
+    value: { low: number }
+    state: number
+    creation_date: { low: number }
 }
 
 const App = () => {
@@ -81,7 +79,7 @@ const App = () => {
 					<ul>
 						{invoices.map((invoice, key) => (
 							<li key={key}>
-								{invoice.amount}: {invoice.status}
+								<>{invoice.creation_date.low}: {invoice.value.low} - {invoice.state}</>
 							</li>
 						))}
 					</ul>

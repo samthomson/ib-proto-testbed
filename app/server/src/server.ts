@@ -7,15 +7,15 @@ const port = 8080
 const wss = new WebSocket.Server({ port })
 const lightning = Lightning.getInstance()
 
-interface Invoice {
-    amount: number
-    creationDate: Date
-    expiryDate: Date
-    status: 'paid' | 'unpaid'
-    lnAddress: string
-}
+// interface Invoice {
+//     amount: number
+//     creationDate: Date
+//     expiryDate: Date
+//     status: 'paid' | 'unpaid'
+//     lnAddress: string
+// }
 
-const recentInvoices: Invoice[] = []
+// const recentInvoices: Invoice[] = []
 
 // Set up a connection event
 let singleClient: WebSocket | null = null
@@ -36,22 +36,24 @@ wss.on('connection', (ws: WebSocket) => {
                 lightning.subscribeToInvoice(invoice.r_hash, (payment_request: string) => {
                     // todo: mark the invoice paid?
                     sendInvoicePaid(payment_request)
+                    sendRecentInvoices()
                 })
                 ws.send(JSON.stringify({ action: 'newInvoice', invoiceId: invoice.payment_request }))
 
                 // Simulate creating an invoice
-                console.log('will now send out invoices', recentInvoices)
                 sendRecentInvoices()
         }
     })
 })
 
-const sendRecentInvoices = () => {
+const sendRecentInvoices = async () => {
     if (!singleClient) {
         return
     }
 
-    singleClient.send(JSON.stringify({ action: 'allInvoices', invoices: recentInvoices }))
+    const invoices = await lightning.getPastInvoicesPaid()
+
+    singleClient.send(JSON.stringify({ action: 'allInvoices', invoices: invoices }))
 }
 
 const sendInvoicePaid = (payment_request: string) => {
