@@ -11,6 +11,8 @@ interface Invoice {
 }
 
 const App = () => {
+	const [newInvoice, setNewInvoice] = React.useState<undefined | string>(undefined)
+
 	const [invoices, setInvoices] = React.useState<Invoice[]>([])
 
 
@@ -32,10 +34,7 @@ const App = () => {
 			switch (parsedData.action) {
 				case 'newInvoice':
 					// show it somewhere
-					setInvoices((prevInvoices) => [
-						...prevInvoices,
-						parsedData.invoice,
-					])
+					setNewInvoice(parsedData.invoiceId)
 					break
 				case 'allInvoices':
 					setInvoices(parsedData.invoices)
@@ -47,6 +46,7 @@ const App = () => {
 
 
 	const sendTip = () => {
+		setNewInvoice(undefined)
 		const amount = Math.floor(Math.random() * 1000) + 1
 
 		sendMessage(JSON.stringify({ action: 'createInvoice', amount }))
@@ -58,7 +58,10 @@ const App = () => {
 			<p>
 				[todo: form for creating invoices]
 				<button onClick={sendTip}>send tip</button>
+				<br/>
+				{newInvoice}
 			</p>
+			<hr/>
 			{(invoices ?? []).length > 0 && (
 				<div>
 					<h4>Past tips</h4>

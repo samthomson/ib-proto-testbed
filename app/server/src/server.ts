@@ -1,9 +1,11 @@
-// Install the ws package first: npm install ws
 import WebSocket from 'ws'
+
+import { Lightning } from './lightning'
 
 // Create a WebSocket server
 const port = 8080
 const wss = new WebSocket.Server({ port })
+const lightning = Lightning.getInstance()
 
 interface Invoice {
     amount: number
@@ -23,12 +25,20 @@ wss.on('connection', (ws: WebSocket) => {
     sendRecentInvoices()
 
     // Set up message event for this connection
-    ws.on('message', (message: string) => {
+    ws.on('message', async (message: string) => {
         console.log(`Received message: ${message}`)
 
         const parsedMessage = JSON.parse(message.toString())
         switch (parsedMessage.action) {
             case 'createInvoice':
+                const invoiceId = await lightning.createInvoice(parsedMessage.amount)
+
+                lightning.subscribeToInvoice(invoiceId, (invoiceId: string) => {
+                    // todo: mark the invoice paid?
+                    wrapUpLatestInvoice()
+                })
+                ws.send(JSON.stringify({ action: 'newInvoice', invoiceId }))
+
                 // Simulate creating an invoice
                 const newInvoice: Invoice = {
                     amount: parsedMessage.amount,
@@ -41,11 +51,6 @@ wss.on('connection', (ws: WebSocket) => {
                 // ws.send(JSON.stringify({ action: 'newInvoice', invoice: newInvoice }))
                 console.log('will now send out invoices', recentInvoices)
                 sendRecentInvoices()
-
-                // simulate it getting paid after 10s (in reality, this would come from watching the node)
-                setInterval(() => {
-                    wrapUpLatestInvoice()
-                }, 5000)
         }
     })
 })
