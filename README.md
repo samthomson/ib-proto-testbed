@@ -19,8 +19,10 @@ Add these things:
 
 ## todo
 
-- lightning connection
-- send some basic node state to the client
+- past invoices:
+	- render dates
+	- render all states
+	- reverse chronological order of invoices
 
 ### some errors to test against
 
