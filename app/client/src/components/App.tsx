@@ -1,5 +1,6 @@
 import React from 'react'
 import useWebSocket, { ReadyState } from 'react-use-websocket';
+import QRCode from "react-qr-code"
 
 // todo: share this type
 interface Invoice {
@@ -12,6 +13,7 @@ interface Invoice {
 
 const App = () => {
 	const [newInvoice, setNewInvoice] = React.useState<undefined | string>(undefined)
+	const [invoiceMessage, setInvoiceMessage] = React.useState<string>('')
 
 	const [invoices, setInvoices] = React.useState<Invoice[]>([])
 
@@ -39,6 +41,9 @@ const App = () => {
 				case 'allInvoices':
 					setInvoices(parsedData.invoices)
 					break
+				case 'invoicePaid':
+					setInvoiceMessage(`invoice ${parsedData.payment_request} is now paid :>`)
+					break
 			}
 		}
 	  }, [lastMessage]);
@@ -47,6 +52,7 @@ const App = () => {
 
 	const sendTip = () => {
 		setNewInvoice(undefined)
+		setInvoiceMessage('')
 		const amount = Math.floor(Math.random() * 1000) + 1
 
 		sendMessage(JSON.stringify({ action: 'createInvoice', amount }))
@@ -59,7 +65,14 @@ const App = () => {
 				[todo: form for creating invoices]
 				<button onClick={sendTip}>send tip</button>
 				<br/>
-				{newInvoice}
+				{newInvoice && invoiceMessage === '' && <div>
+					{newInvoice}:
+					<QRCode value={newInvoice} />
+					
+				</div>}
+				{invoiceMessage !== '' && <div>
+					{invoiceMessage}
+				</div>}
 			</p>
 			<hr/>
 			{(invoices ?? []).length > 0 && (

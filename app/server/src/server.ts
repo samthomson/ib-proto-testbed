@@ -31,39 +31,20 @@ wss.on('connection', (ws: WebSocket) => {
         const parsedMessage = JSON.parse(message.toString())
         switch (parsedMessage.action) {
             case 'createInvoice':
-                const invoiceId = await lightning.createInvoice(parsedMessage.amount)
+                const invoice = await lightning.createInvoice(parsedMessage.amount)
 
-                lightning.subscribeToInvoice(invoiceId, (invoiceId: string) => {
+                lightning.subscribeToInvoice(invoice.r_hash, (payment_request: string) => {
                     // todo: mark the invoice paid?
-                    wrapUpLatestInvoice()
+                    sendInvoicePaid(payment_request)
                 })
-                ws.send(JSON.stringify({ action: 'newInvoice', invoiceId }))
+                ws.send(JSON.stringify({ action: 'newInvoice', invoiceId: invoice.payment_request }))
 
                 // Simulate creating an invoice
-                const newInvoice: Invoice = {
-                    amount: parsedMessage.amount,
-                    creationDate: new Date(),
-                    expiryDate: new Date(Date.now() + 3600000), // 1 hour from now
-                    status: 'unpaid',
-                    lnAddress: 'ln-address-here',
-                }
-                recentInvoices.push(newInvoice)
-                // ws.send(JSON.stringify({ action: 'newInvoice', invoice: newInvoice }))
                 console.log('will now send out invoices', recentInvoices)
                 sendRecentInvoices()
         }
     })
 })
-
-const wrapUpLatestInvoice = () => {
-    if (!singleClient) {
-        return
-    }
-    if (recentInvoices.length > 0) {
-        recentInvoices[recentInvoices.length - 1].status = 'paid'
-        sendRecentInvoices()
-    }
-}
 
 const sendRecentInvoices = () => {
     if (!singleClient) {
@@ -71,6 +52,14 @@ const sendRecentInvoices = () => {
     }
 
     singleClient.send(JSON.stringify({ action: 'allInvoices', invoices: recentInvoices }))
+}
+
+const sendInvoicePaid = (payment_request: string) => {
+    if (!singleClient) {
+        return
+    }
+
+    singleClient.send(JSON.stringify({ action: 'invoicePaid', payment_request }))
 }
 
 console.log(`WebSocket server started on ws://localhost:${port}`)
