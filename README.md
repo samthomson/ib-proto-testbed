@@ -5,6 +5,13 @@ It works by connecting to a local lightning node via the gRPC interface. A react
 
 ## set up
 
+Add these things:
+
+- app/server/lnd/invoice.macaroon
+- app/server/lnd/invoices.proto
+- app/server/lnd/lightning.proto
+- app/server/lnd/tls.cert
+
 `docker-compose build`
 `docker-compose run app sh` then `cd server && yarn && cd ../client && yarn`
 
