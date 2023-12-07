@@ -1,6 +1,6 @@
-# tip me
+# a test bed to play around with some btc-lightning flows
 
-An app to facilitate lightning payments to a predefined address.
+Testbed repo to work through some flows.
 It works by connecting to a local lightning node via the gRPC interface. A react front end talks to the backend via websockets.
 
 ## set up
@@ -19,12 +19,9 @@ Add these things:
 
 ## todo
 
-- past invoices:
-	- render dates
-	- render all states
-	- reverse chronological order of invoices
-
-### some errors to test against
-
-- node starting up
-- dns failure (on wrong network)
+- [ ] btc -> lightning, eg opening a channel
+- [ ] lightning: pay an alby LN address
+- [ ] lightning: pay a non-alby LN address (stackernews, and some actual wallets)
+- [ ] lightning: URL payment?
+- [ ] lightning: generate a withdrawal invoice (phoenix)
+- [ ] top up lightning channel. close and create new?
