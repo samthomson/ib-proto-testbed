@@ -1,23 +1,25 @@
 import React from 'react'
-import useWebSocket, { ReadyState } from 'react-use-websocket';
-import QRCode from "react-qr-code"
+import useWebSocket, { ReadyState } from 'react-use-websocket'
+import QRCode from 'react-qr-code'
 
 // todo: share this type
 interface Invoice {
-    value: { low: number }
-    state: number
-    creation_date: { low: number }
+	value: { low: number }
+	state: number
+	creation_date: { low: number }
 }
 
 const App = () => {
-	const [newInvoice, setNewInvoice] = React.useState<undefined | string>(undefined)
+	const [newInvoice, setNewInvoice] = React.useState<undefined | string>(
+		undefined,
+	)
 	const [invoiceMessage, setInvoiceMessage] = React.useState<string>('')
 
 	const [invoices, setInvoices] = React.useState<Invoice[]>([])
 
-
-	const { sendMessage, lastMessage, readyState } = useWebSocket('ws://localhost:3601');
-
+	const { sendMessage, lastMessage, readyState } = useWebSocket(
+		'ws://localhost:3601',
+	)
 
 	const connectionStatus = {
 		[ReadyState.CONNECTING]: 'Connecting',
@@ -25,9 +27,9 @@ const App = () => {
 		[ReadyState.CLOSING]: 'Closing',
 		[ReadyState.CLOSED]: 'Closed',
 		[ReadyState.UNINSTANTIATED]: 'Uninstantiated',
-	  }[readyState];
+	}[readyState]
 
-	  React.useEffect(() => {
+	React.useEffect(() => {
 		if (lastMessage !== null) {
 			const parsedData = JSON.parse(lastMessage.data)
 
@@ -40,13 +42,13 @@ const App = () => {
 					setInvoices(parsedData.invoices)
 					break
 				case 'invoicePaid':
-					setInvoiceMessage(`invoice ${parsedData.payment_request} is now paid :>`)
+					setInvoiceMessage(
+						`invoice ${parsedData.payment_request} is now paid :>`,
+					)
 					break
 			}
 		}
-	  }, [lastMessage]);
-
-
+	}, [lastMessage])
 
 	const sendTip = () => {
 		setNewInvoice(undefined)
@@ -58,28 +60,31 @@ const App = () => {
 
 	return (
 		<div>
-			{connectionStatus}<hr/>
+			{connectionStatus}
+			<hr />
 			<p>
 				[todo: form for creating invoices]
 				<button onClick={sendTip}>send tip</button>
-				<br/>
-				{newInvoice && invoiceMessage === '' && <div>
-					{newInvoice}:
-					<QRCode value={newInvoice} />
-					
-				</div>}
-				{invoiceMessage !== '' && <div>
-					{invoiceMessage}
-				</div>}
+				<br />
+				{newInvoice && invoiceMessage === '' && (
+					<div>
+						{newInvoice}:
+						<QRCode value={newInvoice} />
+					</div>
+				)}
+				{invoiceMessage !== '' && <div>{invoiceMessage}</div>}
 			</p>
-			<hr/>
+			<hr />
 			{(invoices ?? []).length > 0 && (
 				<div>
 					<h4>Past tips</h4>
 					<ul>
 						{invoices.map((invoice, key) => (
 							<li key={key}>
-								<>{invoice.creation_date.low}: {invoice.value.low} - {invoice.state}</>
+								<>
+									{invoice.creation_date.low}:{' '}
+									{invoice.value.low} - {invoice.state}
+								</>
 							</li>
 						))}
 					</ul>
