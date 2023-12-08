@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@getalby/lightning-tools": "^5.0.0",
     "@grpc/grpc-js": "^1.9.6",
     "@grpc/proto-loader": "^0.7.10",
     "ts-node": "^10.9.1",
@@ -11,7 +12,8 @@
     "watch-server": "tsc-watch -p ./tsconfig.json --onSuccess \"yarn run start\" --onFailure \"echo Compilation failed...\" --noClear",
     "lint-summary": "eslint '*/**/*.{js,ts,tsx}'",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
-    "test-channel-open": "ts-node src/test-scripts/channel-open.ts"
+    "test-channel-open": "ts-node src/test-scripts/channel-open.ts",
+    "test-pay-ln-address": "ts-node src/test-scripts/pay-ln-address.ts"
   },
   "devDependencies": {
     "@types/ws": "^8.5.7",
