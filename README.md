@@ -17,6 +17,10 @@ Add these things:
 
 `docker-compose up`
 
+## notes
+
+- lightning addresses (and compatable wallets) https://lightningaddress.com/#community
+
 ## todo
 
 - [x] btc -> lightning, eg opening a channel
