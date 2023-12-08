@@ -3,7 +3,7 @@
 /app/server/node_modules
 
 # security / credentials
-app/server/lnd/invoice.macaroon
+app/server/lnd/*.macaroon
 app/server/lnd/invoices.proto
 app/server/lnd/lightning.proto
 app/server/lnd/tls.cert
