@@ -4,7 +4,7 @@ const main = async () => {
     console.log('testpaying an address')
     const lightning = Lightning.getInstance()
 
-    const payAddressAttempt = await lightning.getInvoice('brokenvoice65881@getalby.com', 1234)
+    const payAddressAttempt = await lightning.getInvoice('brokenvoice65881@getalby.com', 1001)
 
     console.log('payAddressAttempt', payAddressAttempt)
 

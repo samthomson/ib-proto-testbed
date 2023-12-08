@@ -233,8 +233,10 @@ export class Lightning {
         await ln.fetch()
         // request an invoice for 1000 satoshis
         // this returns a new `Invoice` class that can also be used to validate the payment
-        // todo: add comment
-        const invoice = await ln.requestInvoice({ satoshi: numberOfSatoshis })
+        const invoice = await ln.requestInvoice({
+            satoshi: numberOfSatoshis,
+            comment: 'A value for value payment from https://insightfulbits.com/',
+        })
 
         const { paymentRequest, paymentHash } = invoice
 
