@@ -19,7 +19,7 @@ Add these things:
 
 ## todo
 
-- [ ] btc -> lightning, eg opening a channel
+- [x] btc -> lightning, eg opening a channel
 - [ ] lightning: pay an alby LN address
 - [ ] lightning: pay a non-alby LN address (stackernews, and some actual wallets)
 - [ ] lightning: URL payment?

@@ -10,7 +10,8 @@
     "start": "ts-node src/server.ts",
     "watch-server": "tsc-watch -p ./tsconfig.json --onSuccess \"yarn run start\" --onFailure \"echo Compilation failed...\" --noClear",
     "lint-summary": "eslint '*/**/*.{js,ts,tsx}'",
-    "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
+    "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
+    "test-channel-open": "ts-node src/test-scripts/channel-open.ts"
   },
   "devDependencies": {
     "@types/ws": "^8.5.7",

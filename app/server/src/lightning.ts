@@ -20,6 +20,11 @@ interface ListInvoiceResponse {
         creation_date: number
     }[]
 }
+
+interface OpenChannelResponse {
+    success: boolean
+}
+
 export class Lightning {
     private GRPC_HOST = 'umbrel.local:10009'
 
@@ -55,7 +60,7 @@ export class Lightning {
             protoLoader.loadSync(['lnd/lightning.proto', 'lnd/invoices.proto'], loaderOptions),
         ).invoicesrpc
 
-        const macaroon = fs.readFileSync('lnd/invoice.macaroon').toString('hex')
+        const macaroon = fs.readFileSync('lnd/admin.macaroon').toString('hex')
         const metadata = new grpc.Metadata()
         metadata.add('macaroon', macaroon)
         const macaroonCreds = grpc.credentials.createFromMetadataGenerator((_args, callback) => {
@@ -141,6 +146,69 @@ export class Lightning {
                     // console.log('something?', response, err);
                 },
             )
+        })
+    }
+
+    public async openChannel(amountInSatoshis: number): Promise<OpenChannelResponse> {
+        console.log('will try to open a channel for sats:' + amountInSatoshis)
+
+        return new Promise((resolve) => {
+            // const client = new lnrpc.Lightning(GRPC_HOST, creds)
+
+            const request = {
+                // sat_per_vbyte: <uint64>,
+                node_pubkey: Buffer.from('03bc9337c7a28bb784d67742ebedd30a93bacdf7e4ca16436ef3798000242b2251', 'hex'),
+                // node_pubkey_string: <string>,
+                local_funding_amount: amountInSatoshis,
+                // push_sat: <int64>,
+                // target_conf: <int32>,
+                // sat_per_byte: <int64>,
+                // private: <bool>,
+                // min_htlc_msat: <int64>,
+                // remote_csv_delay: <uint32>,
+                // min_confs: <int32>,
+                // spend_unconfirmed: <bool>,
+                // close_address: <string>,
+                // funding_shim: <FundingShim>,
+                // remote_max_value_in_flight_msat: <uint64>,
+                // remote_max_htlcs: <uint32>,
+                // max_local_csv: <uint32>,
+                // commitment_type: <CommitmentType>,
+                // zero_conf: <bool>,
+                // scid_alias: <bool>,
+                // base_fee: <uint64>,
+                // fee_rate: <uint64>,
+                // use_base_fee: <bool>,
+                // use_fee_rate: <bool>,
+                // remote_chan_reserve_sat: <uint64>,
+                // fund_max: <bool>,
+                memo: `A channel opened for ${amountInSatoshis} sats`,
+                // outpoints: <OutPoint>,
+            }
+
+            try {
+                const call = this.lnd.openChannel(request)
+
+                call.on('data', function (response: any) {
+                    // A response was received from the server.
+                    console.log('response', response)
+                    resolve({ success: false })
+                })
+                call.on('status', function (status: any) {
+                    // The current status of the stream.
+                    console.log('status', status)
+                    resolve({ success: false })
+                })
+                call.on('end', function () {
+                    // The server has closed the stream.
+                    console.log('END OF STREAM')
+                    resolve({ success: false })
+                })
+            } catch (err) {
+                console.log('err', err)
+                resolve({ success: false })
+                // return { success: false }
+            }
         })
     }
 }
