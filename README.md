@@ -21,7 +21,7 @@ Add these things:
 
 - [x] btc -> lightning, eg opening a channel
 - [x] lightning: pay an alby LN address
-- [ ] lightning: pay a non-alby LN address (stackernews, and some actual wallets)
+- [x] lightning: pay a non-alby LN address (stackernews, and some actual wallets)
 - [?] lightning: URL payment?
 - [ ] lightning: generate a withdrawal invoice (phoenix)
 - [ ] top up lightning channel. close and create new?
